@@ -6,48 +6,66 @@
 
 ## Задачи со звездочкой
 
-Выполнены все задачи со звездочкой кроме авторизации и dockerfilek
+Выполнены все задачи со звездочкой кроме авторизации
+
+## Файлы
+
+- `main.go` — точка входа: загрузка `.env`, инициализация БД и HTTP-сервера  
+- `pkg/api/` — HTTP-обработчики: `/api/task`, `/api/tasks`, `/api/task/done` и др.  
+- `pkg/db/` — функции работы с SQLite: `AddTask`, `Tasks`, `GetTask`, `UpdateTask`, `DeleteTask`, `UpdateDate`  
+- `pkg/server/` — настройка маршрутов и статических файлов  
+- `web/` — фронтенд: `index.html`, `login.html`, CSS, JS  
+- `tests/` — автотесты  
+- `.env.example` — пример переменных окружения  
+- `scheduler.db` — файл SQLite (создаётся при старте)  
+- `Dockerfile` — сборка контейнера  
+- `README.md` — этот файл  
+
 
 ## Переменные окружения
 
 Скопируйте `.env.example` в `.env` и при необходимости измените:
 
-TODO_PORT = :7540
+-`TODO_PORT = :7540`
 
-WEB_DIR = ./web
+-`WEB_DIR = ./web`
 
-TODO_DBFILE = scheduler.db
-
-
+-`TODO_DBFILE = scheduler.db`
 
 ## Сборка и запуск локально
 
-1. Установите Go (версия 1.18+).
+1. Установите Go (версия 1.24).
 2. Склонируйте репозиторий и перейдите в корень проекта.
 3. Создайте `.env`:
-cp .env.example .env
 
+    -`cp .env.example .env`
 
 4. Соберите приложение:
-go build -o todo .
+- `go build -o todo .`
 
 5. Запустите сервер:
-./todo
+- `./todo`
 
 6. Откройте в браузере:
-- http://localhost:7540/ — главный интерфейс
+- `http://localhost:7540/` — главный интерфейс
+
+## Запуск контейнера
+
+- `docker build -t todo .`
+
+- `docker run -p 7540:7540 todo`
 
 ## Запуск автотестов
 
 Тесты находятся в директории `tests/`. Запустите все тесты:
 
-go test ./tests
+- `go test ./tests`
 
 Или отдельные:
 
-go test -run ^TestTasks$ ./tests
+- `go test -run ^TestTasks$ ./tests`
 
-go test -run ^TestDone$ ./tests
+- `go test -run ^TestDone$ ./tests`
 
 
 При необходимости включить флаги поиска/авторизации отредактируйте `tests/settings.go`.
