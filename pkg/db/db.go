@@ -43,3 +43,11 @@ func Init(dbFile string) error {
 
 	return nil
 }
+
+func Close() error {
+	err := db.Close()
+	if err != nil {
+		return fmt.Errorf("failed to close db connection")
+	}
+	return nil
+}

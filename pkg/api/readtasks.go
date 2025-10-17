@@ -7,7 +7,7 @@ import (
 )
 
 type TasksResp struct {
-	Tasks []*db.Task `json:"tasks"`
+	Tasks []*db.ReqTask `json:"tasks"`
 }
 
 func readTasks(w http.ResponseWriter, r *http.Request) {

@@ -28,12 +28,15 @@ func main() {
 		dbName = "scheduler.db"
 	}
 
-	srv := server.Run(webDir)
 
 	err = db.Init("scheduler.db")
 	if err != nil {
 		log.Fatal("error init db")
 	}
+	defer db.Close()
+
+	srv := server.New(webDir)
+	log.Println("Server starting on port", port)
 
 	err = http.ListenAndServe(port, srv)
 	if err != nil {

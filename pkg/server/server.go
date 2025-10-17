@@ -6,7 +6,7 @@ import (
 	"github.com/magabrotheeeer/Yandex-Practicum-Final-Project/pkg/api"
 )
 
-func Run(webDir string) *http.ServeMux {
+func New(webDir string) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir(webDir)))
 	api.Init(mux)

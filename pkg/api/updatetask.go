@@ -33,7 +33,7 @@ func updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func validateTask(t *db.ReqTask) error {
-	dt, err := time.Parse("20060102", t.Date)
+	dt, err := time.Parse(db.DateFormat, t.Date)
 	if err != nil {
 		return fmt.Errorf("invalid date")
 	}

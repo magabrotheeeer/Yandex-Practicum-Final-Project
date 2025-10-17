@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/magabrotheeeer/Yandex-Practicum-Final-Project/pkg/db"
 )
 
 var (
@@ -33,7 +35,7 @@ func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	if nowStr := q.Get("now"); nowStr == "" {
 		now = time.Now()
 	} else {
-		t, err := time.ParseInLocation("20060102", nowStr, time.Local)
+		t, err := time.ParseInLocation(db.DateFormat, nowStr, time.Local)
 		if err != nil {
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			http.Error(w, "now: invalid date", http.StatusBadRequest)
@@ -59,7 +61,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	}
 
 	loc := now.Location()
-	start, err := time.ParseInLocation("20060102", dstart, loc)
+	start, err := time.ParseInLocation(db.DateFormat, dstart, loc)
 	if err != nil {
 		return "", errBadStartDate
 	}
@@ -80,7 +82,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		for !afterNow(date, now) {
 			date = date.AddDate(0, 0, n)
 		}
-		return date.Format("20060102"), nil
+		return date.Format(db.DateFormat), nil
 
 	case "y":
 		if len(parts) != 1 {
@@ -90,7 +92,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		for !afterNow(date, now) {
 			date = addYearHuman(date)
 		}
-		return date.Format("20060102"), nil
+		return date.Format(db.DateFormat), nil
 
 	case "w":
 		if len(parts) != 2 {
@@ -103,7 +105,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		date = date.AddDate(0, 0, 1)
 		for {
 			if afterNow(date, now) && wset[weekdayISO(date)] {
-				return date.Format("20060102"), nil
+				return date.Format(db.DateFormat), nil
 			}
 			date = date.AddDate(0, 0, 1)
 			if date.Sub(start) > 100*365*24*time.Hour {
@@ -133,7 +135,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		date = date.AddDate(0, 0, 1)
 		for {
 			if afterNow(date, now) && monSpec[int(date.Month())] && matchMonthDay(date, daySpec) {
-				return date.Format("20060102"), nil
+				return date.Format(db.DateFormat), nil
 			}
 			date = date.AddDate(0, 0, 1)
 			if date.Sub(start) > 100*365*24*time.Hour {

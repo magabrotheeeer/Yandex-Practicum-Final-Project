@@ -53,7 +53,7 @@
 
 - `docker build -t todo .`
 
-- `docker run -p 7540:7540 todo`
+- `docker run --env-file .env todo`
 
 ## Запуск автотестов
 

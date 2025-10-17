@@ -11,8 +11,9 @@ import (
 	"github.com/magabrotheeeer/Yandex-Practicum-Final-Project/pkg/db"
 )
 
+
 func addTaskHandler(w http.ResponseWriter, r *http.Request) {
-	var task db.Task
+	var task db.ReqTask
 	err := json.NewDecoder(r.Body).Decode(&task)
 	if err != nil {
 		writeJSONError(w, "invalid json body", http.StatusBadRequest)
@@ -37,14 +38,14 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func checkDate(task *db.Task) error {
+func checkDate(task *db.ReqTask) error {
 	now := time.Now()
 
 	if task.Date == "" {
-		task.Date = now.Format("20060102")
+		task.Date = now.Format(db.DateFormat)
 	}
 
-	t, err := time.Parse("20060102", task.Date)
+	t, err := time.Parse(db.DateFormat, task.Date)
 	if err != nil {
 		return fmt.Errorf("failed to parse field Date: %v", err)
 	}
@@ -62,7 +63,7 @@ func checkDate(task *db.Task) error {
 		}
 	} else {
 		if t.Before(nowDate) {
-			task.Date = now.Format("20060102")
+			task.Date = now.Format(db.DateFormat)
 		}
 	}
 

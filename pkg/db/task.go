@@ -7,14 +7,6 @@ import (
 	"time"
 )
 
-type Task struct {
-	ID      int64  `json:"id"`
-	Date    string `json:"date"`
-	Title   string `json:"title"`
-	Comment string `json:"comment"`
-	Repeat  string `json:"repeat"`
-}
-
 type ReqTask struct {
 	ID      string `json:"id"`
 	Date    string `json:"date"`
@@ -23,7 +15,11 @@ type ReqTask struct {
 	Repeat  string `json:"repeat"`
 }
 
-func AddTask(task *Task) (int64, error) {
+const (
+	DateFormat = "20060102"
+)
+
+func AddTask(task *ReqTask) (int64, error) {
 	if db == nil {
 		return 0, fmt.Errorf("database connection is not initialized")
 	}
@@ -54,7 +50,7 @@ func Tasks(limit int, search string) ([]*ReqTask, error) {
 	if search != "" {
 		if parsed, err := time.Parse("02.01.2006", search); err == nil {
 			query = baseSelect + " WHERE date = ? ORDER BY date ASC LIMIT ?"
-			params = []any{parsed.Format("20060102"), limit}
+			params = []any{parsed.Format(DateFormat), limit}
 		} else {
 			query = baseSelect + " WHERE title LIKE ? OR comment LIKE ? ORDER BY date ASC LIMIT ?"
 			pat := "%" + search + "%"
@@ -114,11 +110,9 @@ func GetTask(id string) (*ReqTask, error) {
         FROM scheduler
         WHERE id = ?
     `
-	var (
-		idInt   int64
-		dateInt int64
-		t       ReqTask
-	)
+	var t ReqTask
+	var idInt, dateInt int64
+
 	err := db.QueryRow(query, id).Scan(
 		&idInt, &dateInt, &t.Title, &t.Comment, &t.Repeat,
 	)
